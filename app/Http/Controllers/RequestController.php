@@ -91,7 +91,7 @@ class RequestController extends Controller
         }
     
         return $this->apiResponse(null, 'Admin not found or no unread notifications', 404); */
-        $user =auth()->user(); //when integrate we will replace it with admin 
+        $user=auth()->user(); //when integrate we will replace it with admin 
 
         foreach ($user->unreadNotifications as $notification) {
             $notification->markAsRead();

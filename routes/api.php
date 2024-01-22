@@ -134,7 +134,7 @@ Route::get('/test', function () {
 Route::post('/register', function () {
     $user = new User;
     $user->name = 'ahmed';
-    $user->email = 'erfa20045@gmail.com';
+    $user->email = 'eslam@gmail.com';
     $user->location = null;
     $user->image = 'default_image.jpg';
     $user->password = bcrypt('12345678');
@@ -160,56 +160,70 @@ Route::post('/register', function () {
 
 
 
+Route::middleware(['auth:sanctum', 'check_admin'])->group(function () {
+
+    Route::get('/admin/users', [App\Http\Controllers\UserController::class, 'showAllCustomers'])->name('index');/* ->middleware(['auth:sanctum', 'check_admin']); */
+
+    Route::post('/admin/blockuser/{id}', [App\Http\Controllers\UserController::class, 'blockUser'])->name('user.block');/* ->middleware(['auth:sanctum', 'check_admin']); */
+    
+    Route::post('/admin/unblockuser/{id}', [App\Http\Controllers\UserController::class, 'unBlockUser'])->name('user.unblock');/* ->middleware(['auth:sanctum', 'check_admin']); */
+    
+    Route::get('/admin/showBlocked/', [App\Http\Controllers\UserController::class, 'showBlocked'])->name('user.showBlocked');/* ->middleware(['auth:sanctum', 'check_admin']); */
+
+
+  
+    Route::get('admin/showAllNotification', [App\Http\Controllers\RequestController::class, 'showAllNotification'])->name('notifications.show');/* ->middleware(['auth:sanctum', 'check_admin']); */
+
+    Route::get('admin/showNotification/{id}', [App\Http\Controllers\RequestController::class, 'showNotification'])->name('notification.show');/* ->middleware(['auth:sanctum', 'check_admin']); */
+
+    Route::post('admin/markAsRead', [App\Http\Controllers\RequestController::class, 'markAsRead'])->name('request.markAsRead');/* ->middleware(['auth:sanctum', 'check_admin']); */
+
+   
+   
+    Route::get('/admin/messages/center', [App\Http\Controllers\MessageController::class, 'adminMessagesCenter'])->name('messages.admin');/* ->middleware(['auth:sanctum', 'check_admin']); */
+
+    Route::get('/admin/messages/center/{userId}', [App\Http\Controllers\MessageController::class, 'showConversation']);/* ->middleware(['auth:sanctum', 'check_admin']); */
+
+    Route::post('/admin/messages/center/{userId}', [App\Http\Controllers\MessageController::class, 'sendReply'])->name('messages.reply');/* ->middleware(['auth:sanctum', 'check_admin']); */
+
+    Route::delete('/messages/center/delete/{msgID}', [App\Http\Controllers\MessageController::class, 'deleteMessage'])->name('messages.admin.delete');/* ->middleware(['auth:sanctum', 'check_admin']); */
+
+    Route::post('admin/messages/center/sendVoice/{id}', [App\Http\Controllers\MessageController::class, 'sendVoiceByAdmin'])->name('admin.messages.center.send.voice');/* ->middleware(['auth:sanctum', 'check_admin']); */
+
+    Route::post('admin/messages/center/sendPhoto/{id}', [App\Http\Controllers\MessageController::class, 'sendPhotoByAdmin'])->name('admin.messages.center.send.Photo');/* ->middleware(['auth:sanctum', 'check_admin']); */
+
+});
 
 
 
 
-Route::get('/admin/users', [App\Http\Controllers\UserController::class, 'showAllCustomers'])->name('index')->middleware(['auth:sanctum', 'check_admin']);
+Route::middleware(['auth:sanctum'])->group(function () {
 
-Route::post('/admin/blockuser/{id}', [App\Http\Controllers\UserController::class, 'blockUser'])->name('user.block')->middleware(['auth:sanctum', 'check_admin']);
+    /* Route::get('/createRequest', [App\Http\Controllers\RequestController::class, 'createRequest'])->name('request.create')->middleware(['auth:sanctum']);
+    */
 
-Route::post('/admin/unblockuser/{id}', [App\Http\Controllers\UserController::class, 'unBlockUser'])->name('user.unblock')->middleware(['auth:sanctum', 'check_admin']);
+    Route::post('/sendRequest', [App\Http\Controllers\RequestController::class, 'sendRequest'])->name('request.send');/* ->middleware(['auth:sanctum']); */
 
+    
+    
+    Route::get('/messages/center', [App\Http\Controllers\MessageController::class, 'messagesCenter'])->name('messages');/* ->middleware(['auth:sanctum']); */
 
+    Route::post('/messages/center/send', [App\Http\Controllers\MessageController::class, 'sendMessageByuser'])->name('messages.send');/* ->middleware(['auth:sanctum']); */
 
-/* Route::get('/createRequest', [App\Http\Controllers\RequestController::class, 'createRequest'])->name('request.create')->middleware(['auth:sanctum']);
- */
+    Route::delete('/messages/center/delete/{msgID}', [App\Http\Controllers\MessageController::class, 'deleteMessage'])->name('messages.delete');/* ->middleware(['auth:sanctum']); */
 
+    /* Route::get('/messages/center/update/{msgID}', [App\Http\Controllers\MessageController::class, 'editMessage'])->name('messages.update')->middleware(['auth:sanctum']);
+    */
 
-Route::post('/sendRequest', [App\Http\Controllers\RequestController::class, 'sendRequest'])->name('request.send')->middleware(['auth:sanctum']);
+    Route::post('/messages/center/update/send/{msgID}', [App\Http\Controllers\MessageController::class, 'editMessageSend'])->name('messages.update.send');/* ->middleware(['auth:sanctum']); */
 
-Route::get('admin/showAllNotification', [App\Http\Controllers\RequestController::class, 'showAllNotification'])->name('notifications.show')->middleware(['auth:sanctum', 'check_admin']);
+    Route::post('/messages/center/sendPhoto/', [App\Http\Controllers\MessageController::class, 'sendPhotoByUser'])->name('messages.center.send.Photo');/* ->middleware(['auth:sanctum']); */
 
-Route::get('admin/showNotification/{id}', [App\Http\Controllers\RequestController::class, 'showNotification'])->name('notification.show')->middleware(['auth:sanctum', 'check_admin']);
+    Route::post('/messages/center/sendVoice/', [App\Http\Controllers\MessageController::class, 'sendVoiceByUser'])->name('messages.center.send.voice');/* ->middleware(['auth:sanctum']); */
 
-Route::post('admin/markAsRead', [App\Http\Controllers\RequestController::class, 'markAsRead'])->name('request.markAsRead')->middleware(['auth:sanctum', 'check_admin']);
-
-
-
-Route::get('/messages/center', [App\Http\Controllers\MessageController::class, 'messagesCenter'])->name('messages')->middleware(['auth:sanctum']);
-
-Route::post('/messages/center/send', [App\Http\Controllers\MessageController::class, 'sendMessageByuser'])->name('messages.send')->middleware(['auth:sanctum']);
-
-Route::get('/admin/messages/center', [App\Http\Controllers\MessageController::class, 'adminMessagesCenter'])->name('messages.admin')->middleware(['auth:sanctum', 'check_admin']);
-
-Route::get('/admin/messages/center/{userId}', [App\Http\Controllers\MessageController::class, 'showConversation'])->middleware(['auth:sanctum', 'check_admin']);
-
-Route::post('/admin/messages/center/{userId}', [App\Http\Controllers\MessageController::class, 'sendReply'])->name('messages.reply')->middleware(['auth:sanctum', 'check_admin']);
-
-Route::delete('/messages/center/delete/{msgID}', [App\Http\Controllers\MessageController::class, 'deleteMessage'])->name('messages.admin.delete')->middleware(['auth:sanctum', 'check_admin']);
-
-Route::delete('/messages/center/delete/{msgID}', [App\Http\Controllers\MessageController::class, 'deleteMessage'])->name('messages.delete')->middleware(['auth:sanctum']);
-
-/* Route::get('/messages/center/update/{msgID}', [App\Http\Controllers\MessageController::class, 'editMessage'])->name('messages.update')->middleware(['auth:sanctum']);
- */
-
-Route::post('/messages/center/update/send/{msgID}', [App\Http\Controllers\MessageController::class, 'editMessageSend'])->name('messages.update.send')->middleware(['auth:sanctum']);
+});
 
 
-Route::post('admin/messages/center/sendPhoto/{id}', [App\Http\Controllers\MessageController::class, 'sendPhotoByAdmin'])->name('admin.messages.center.send.Photo')->middleware(['auth:sanctum', 'check_admin']);
 
-Route::post('/messages/center/sendPhoto/', [App\Http\Controllers\MessageController::class, 'sendPhotoByUser'])->name('messages.center.send.Photo')->middleware(['auth:sanctum']);
 
-Route::post('admin/messages/center/sendVoice/{id}', [App\Http\Controllers\MessageController::class, 'sendVoiceByAdmin'])->name('admin.messages.center.send.voice')->middleware(['auth:sanctum', 'check_admin']);
 
-Route::post('/messages/center/sendVoice/', [App\Http\Controllers\MessageController::class, 'sendVoiceByUser'])->name('messages.center.send.voice')->middleware(['auth:sanctum']);

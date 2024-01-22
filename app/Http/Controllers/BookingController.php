@@ -74,7 +74,7 @@ class BookingController extends Controller
             'guests' => 'required',
         ]);
 
-        $booking = Booking::findOrFail($id);
+        $booking = Booking::find($id);
         if (!$booking) {
             return response()->json([
                 'message' => 'Reservation not available.'
@@ -114,7 +114,7 @@ class BookingController extends Controller
     // cancel booking
     public function cancelBooking($id)
     {
-        $booking = Booking::findOrFail($id);
+        $booking = Booking::find($id);
         if (!$booking) {
             return response()->json([
                 'message' => 'Booking not found',
@@ -139,7 +139,7 @@ class BookingController extends Controller
     // receive booking
     public function receiveBooking($id)
     {
-        $booking = Booking::findOrFail($id);
+        $booking = Booking::find($id);
         if (!$booking) {
             return response()->json([
                 'message' => 'Booking not found',

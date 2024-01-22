@@ -91,7 +91,7 @@ class ItemController extends Controller
             'category_id' => 'required'
         ]);
 
-        $item = Item::findOrFail($id);
+        $item = Item::find($id);
 
         $category = Category::where('id', $request->category_id)->first();
         if (!$category) {

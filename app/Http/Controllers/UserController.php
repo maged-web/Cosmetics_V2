@@ -48,4 +48,20 @@ class UserController extends Controller
 
         return $this->apiResponse(null, 'No User found', 400);
     }
+    function showBlocked()
+    {
+        $blockedUsers = User::where('blocked', 1)->get();
+        
+        if(sizeof($blockedUsers)<1)
+        {
+            return $this->apiResponse(null, 'No User blocked', 400);
+
+        }
+        else 
+        {
+            return $this->apiResponse($blockedUsers, 'Users retrived successfully', 200);
+
+        }
+
+    }
 }
